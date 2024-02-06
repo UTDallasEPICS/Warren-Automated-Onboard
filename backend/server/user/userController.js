@@ -438,111 +438,276 @@ module.exports = {
     }
   },
 
-  // getAllArchivedEmployees: async (req, res) => {
-    
-  // },
+  getAllArchivedEmployees: async (req, res) => {
+    try {
+      const employeeRoleMappings = await prisma.userRoleMapping.findMany({
+        where: {
+          roleId: 3,
+        },
+      });
 
-  // getAllArchivedSupervisors: async (req, res) => {
-  //   try {
-  //     const supervisorRoleMappings = await prisma.userRoleMapping.findMany({
-  //       where: {
-  //         roleId: 2,
-  //       },
-  //     });
+      const uniqueUserIds = [...new Set(employeeRoleMappings.map(mapping => mapping.userId))];
 
-  //     const uniqueUserIds = [...new Set(supervisorRoleMappings.map(mapping => mapping.userId))];
+      const collectUserIds = async () => {
+        let userIds = [];
+        await Promise.all(
+          uniqueUserIds.map(async userId => {
+            const latestEntry = await prisma.userRoleMapping.findFirst({
+              where: {
+                userId: userId,
+              },
+              orderBy: {
+                id: 'desc',
+              },
+            });
+            if (latestEntry.roleId === 3) {
+              userIds.push(userId);
+            }
+          })
+        );
+        return userIds;
+      };
+      const userIds = await collectUserIds();
 
-  //     const collectUserIds = async () => {
-  //       let userIds = [];
-  //       await Promise.all(
-  //         uniqueUserIds.map(async userId => {
-  //           const latestEntry = await prisma.userRoleMapping.findFirst({
-  //             where: {
-  //               userId: userId,
-  //             },
-  //             orderBy: {
-  //               id: 'desc',
-  //             },
-  //           });
-  //           if (latestEntry.roleId === 2) {
-  //             userIds.push(userId);
-  //           }
-  //         })
-  //       );
-  //       return userIds;
-  //     };
-  //     const userIds = await collectUserIds();
+      console.log('userIds', userIds);
 
-  //     const getArchivedSupervisors = userIds.map(async userId => {
-  //       const user = await prisma.user.findFirst({
-  //         where: {
-  //           id: userId,
-  //           archived: true,
-  //         },
-  //       });
-  //       return user;
-  //     });
+      const getArchivedEmployees = await Promise.all(
+        userIds.map(async userId => {
+          const user = await prisma.user.findFirst({
+            where: {
+              id: userId,
+              archived: true,
+            },
+          });
+          const userRole = await prisma.userRoleMapping.findFirst({
+            where: {
+              userId: userId,
+            },
+            orderBy: {
+              id: 'desc',
+            },
+          });
+          const role = await prisma.role.findUnique({
+            where: {
+              id: userRole.roleId,
+            },
+          });
+          const userDepartment = await prisma.departmentUserMapping.findMany({
+            where: {
+              userId: userId,
+            },
+          });
+          const departments = await Promise.all(
+            userDepartment.map(async mapping => {
+              const department = await prisma.department.findUnique({
+                where: {
+                  id: mapping.departmentId,
+                },
+              });
+              return department.name;
+            })
+          );
+          const userWithRoleAndDepartment = {
+            ...user,
+            roleName: role.roleName,
+            departmentName: departments,
+          };
+          console.log('userWithRoleAndDepartment', userWithRoleAndDepartment);
+          return userWithRoleAndDepartment;
+        })
+      );
 
-  //     if (!getArchivedSupervisors) {
-  //       return res.status(404).json({ message: 'No supervisors found or all supervisors archived' });
-  //     }
-  //     res.status(200).json(getArchivedSupervisors);
-  //   } catch (error) {
-  //     console.log(error);
-  //     res.status(500).json({ message: 'Error retrieving all archived supervisors' });
-  //   }
-  // },
+      if (!getArchivedEmployees) {
+        return res.status(404).json({ message: 'No employees found or all employees archived' });
+      }
+      res.status(200).json(getArchivedEmployees);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: 'Error retrieving all archived employees' });
+    }
+  },
 
-  // getAllArchivedAdmins: async (req, res) => {
-  //   try {
-  //     const adminRoleMappings = await prisma.userRoleMapping.findMany({
-  //       where: {
-  //         roleId: 1,
-  //       },
-  //     });
+  getAllArchivedSupervisors: async (req, res) => {
+    try {
+      const supervisorRoleMappings = await prisma.userRoleMapping.findMany({
+        where: {
+          roleId: 2,
+        },
+      });
 
-  //     const uniqueUserIds = [...new Set(adminRoleMappings.map(mapping => mapping.userId))];
+      const uniqueUserIds = [...new Set(supervisorRoleMappings.map(mapping => mapping.userId))];
 
-  //     const collectUserIds = async () => {
-  //       let userIds = [];
-  //       await Promise.all(
-  //         uniqueUserIds.map(async userId => {
-  //           const latestEntry = await prisma.userRoleMapping.findFirst({
-  //             where: {
-  //               userId: userId,
-  //             },
-  //             orderBy: {
-  //               id: 'desc',
-  //             },
-  //           });
-  //           if (latestEntry.roleId === 1) {
-  //             userIds.push(userId);
-  //           }
-  //         })
-  //       );
-  //       return userIds;
-  //     };
-  //     const userIds = await collectUserIds();
+      const collectUserIds = async () => {
+        let userIds = [];
+        await Promise.all(
+          uniqueUserIds.map(async userId => {
+            const latestEntry = await prisma.userRoleMapping.findFirst({
+              where: {
+                userId: userId,
+              },
+              orderBy: {
+                id: 'desc',
+              },
+            });
+            if (latestEntry.roleId === 2) {
+              userIds.push(userId);
+            }
+          })
+        );
+        return userIds;
+      };
+      const userIds = await collectUserIds();
+      console.log('userIds', userIds);
 
-  //     const getArchivedAdmins = userIds.map(async userId => {
-  //       const user = await prisma.user.findFirst({
-  //         where: {
-  //           id: userId,
-  //           archived: true,
-  //         },
-  //       });
-  //       return user;
-  //     });
+      const getArchivedSupervisors = await Promise.all(
+        userIds.map(async userId => {
+          const user = await prisma.user.findFirst({
+            where: {
+              id: userId,
+              archived: true,
+            },
+          });
+          if (!user) {
+            throw new Error('User not found or is archived');
+          }
+          const userRole = await prisma.userRoleMapping.findFirst({
+            where: {
+              userId: userId,
+            },
+            orderBy: {
+              id: 'desc',
+            },
+          });
+          const role = await prisma.role.findUnique({
+            where: {
+              id: userRole.roleId,
+            },
+          });
+          const userDepartment = await prisma.departmentUserMapping.findMany({
+            where: {
+              userId: userId,
+            },
+          });
+          const departments = await Promise.all(
+            userDepartment.map(async mapping => {
+              const department = await prisma.department.findUnique({
+                where: {
+                  id: mapping.departmentId,
+                },
+              });
+              return department.name;
+            })
+          );
+          const userWithRoleAndDepartment = {
+            ...user,
+            roleName: role.roleName,
+            departmentName: departments,
+          };
+          return userWithRoleAndDepartment;
+        })
+      );
+      res.status(200).json(getArchivedSupervisors);
+    } catch (error) {
+      console.log(error);
+      if (error.message === 'User not found or is archived') {
+        return res.status(404).json({ message: 'No supervisors found or all supervisors archived' });
+      } else {
+        res.status(500).json({ message: 'Error retrieving all archived supervisors' });
+      }
+    }
+  },
 
-  //     if (!getArchivedAdmins) {
-  //       return res.status(404).json({ message: 'No admins found or all admins archived' });
-  //     }
-  //     res.status(200).json(getArchivedAdmins);
-  //   } catch (error) {
-  //     console.log(error);
-  //     res.status(500).json({ message: 'Error retrieving all archived admins' });
-  //   }
-  // },
+  getAllArchivedAdmins: async (req, res) => {
+    try {
+      const adminRoleMappings = await prisma.userRoleMapping.findMany({
+        where: {
+          roleId: 1,
+        },
+      });
+
+      const uniqueUserIds = [...new Set(adminRoleMappings.map(mapping => mapping.userId))];
+
+      const collectUserIds = async () => {
+        let userIds = [];
+        await Promise.all(
+          uniqueUserIds.map(async userId => {
+            const latestEntry = await prisma.userRoleMapping.findFirst({
+              where: {
+                userId: userId,
+              },
+              orderBy: {
+                id: 'desc',
+              },
+            });
+            if (latestEntry.roleId === 1) {
+              userIds.push(userId);
+            }
+          })
+        );
+        return userIds;
+      };
+      const userIds = await collectUserIds();
+      console.log('userIds', userIds);
+
+      const getArchivedAdmins = await Promise.all(
+        userIds.map(async userId => {
+          console.log('userId', userId);
+          const user = await prisma.user.findFirst({
+            where: {
+              id: userId,
+              archived: true,
+            },
+          });
+          // console.log('user', user);
+          // if (!user) {
+          //   throw new Error('User not found or is archived');
+          // }
+          const userRole = await prisma.userRoleMapping.findFirst({
+            where: {
+              userId: userId,
+            },
+            orderBy: {
+              id: 'desc',
+            },
+          });
+          const role = await prisma.role.findUnique({
+            where: {
+              id: userRole.roleId,
+            },
+          });
+          const userDepartment = await prisma.departmentUserMapping.findMany({
+            where: {
+              userId: userId,
+            },
+          });
+          const departments = await Promise.all(
+            userDepartment.map(async mapping => {
+              const department = await prisma.department.findUnique({
+                where: {
+                  id: mapping.departmentId,
+                },
+              });
+              return department.name;
+            })
+          );
+          const userWithRoleAndDepartment = {
+            ...user,
+            roleName: role.roleName,
+            departmentName: departments,
+          };
+          return userWithRoleAndDepartment;
+        })
+      );
+      res.status(200).json(getArchivedAdmins);
+    } catch (error) {
+      console.log(error);
+      if (error.message === 'User not found or is archived') {
+        return res.status(404).json({ message: 'No admins found or all admins archived' });
+      } else {
+        res.status(500).json({ message: 'Error retrieving all archived admins' });
+      }
+    }
+  },
 
   //PUT
   updateUser: async (req, res) => {
