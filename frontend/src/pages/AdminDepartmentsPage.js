@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import axios from 'axios';
 import Table from '../components/Table';
+import ArchiveDepartments from '../components/ArchiveDepartments';
 
 const AdminDepartmentsPage = () => {
   const [employeess, setEmployeess] = useState([]);
@@ -51,7 +52,10 @@ const AdminDepartmentsPage = () => {
         {departments.map(department => (
           <>
             <div className="ml-20 mr-2 mt-2 p-6 rounded-lg bg-gray-900">
+            <div className="flex justify-between items-center">
               <h1 className="mb-4 text-white text-2xl font-bold">{department.name}</h1>
+            <ArchiveDepartments deptId={department.id} />
+            </div>
             </div>
             <Table data={employeeData} heading={employeeHeadings} isLoading={isLoading} />
           </>
