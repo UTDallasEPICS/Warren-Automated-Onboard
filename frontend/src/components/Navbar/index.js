@@ -8,10 +8,12 @@ import ArchiveBoxIcon from '../../icons/ArchiveBoxIcon';
 import { animated, useSpring } from 'react-spring';
 import ProfileModal from '../ProfileModal';
 import Cookies from 'js-cookie';
+import '../../styles/Navbar.css';
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
+  const [currentPage, setCurrentPage] = useState('');
 
   const iconTransition = useSpring({
     transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
@@ -34,16 +36,9 @@ const Navbar = () => {
       }}
     >
       {/* Menu */}
-      <button
-        onClick={handleMenuClick}
-        className={`flex flex-row items-center active:bg-gray-700 rounded`}
-      >
+      <button onClick={handleMenuClick} className={`flex flex-row items-center active:bg-gray-700 rounded`}>
         <animated.div style={iconTransition} className="transition-transform">
-          {isExpanded ? (
-            <CrossIcon className="h-6 w-6" />
-          ) : (
-            <MenuIcon className="h-6 w-6" />
-          )}
+          {isExpanded ? <CrossIcon className="h-6 w-6" /> : <MenuIcon className="h-6 w-6" />}
         </animated.div>
       </button>
 
@@ -53,14 +48,16 @@ const Navbar = () => {
         <div
           className={`flex items-center px-1 ${
             isExpanded
-              ? 'button w-25 h-8 bg-blue-500 rounded-lg cursor-pointer select-none active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841] active:border-b-[0px] transition-all duration-100 [box-shadow:0_10px_0_0_#1b6ff8,0_15px_0_0_#1b70f841] border-b-[1px] border-blue-400'
+              ? 'button w-25 h-8 bg-blue-500 rounded-lg cursor-pointer select-none active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841] active:border-b-[0px] transition-all duration-100 [box-shadow:0_10px_0_0_#1b6ff8,0_15px_0_0_#1b70f841] border-b-[1px] border-blue-400' 
               : 'hidden'
           }`}
           onClick={() => {
             if (Cookies.get('role') === 'Admin') {
               navigate('/admin/users');
+              setCurrentPage('/admin/users');
             } else {
               navigate('/supervisor/users');
+              setCurrentPage('/supervisor/users');
             }
           }}
         >
@@ -72,13 +69,15 @@ const Navbar = () => {
           className={`flex items-center px-1 ${
             isExpanded
               ? 'hidden'
-              : 'button w-8 h-8 bg-blue-500 rounded-lg cursor-pointer select-none active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841] active:border-b-[0px] transition-all duration-100 [box-shadow:0_10px_0_0_#1b6ff8,0_15px_0_0_#1b70f841] border-b-[1px] border-blue-400'
+              : 'button w-8 h-8 bg-blue-500 rounded-lg cursor-pointer select-none active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841] active:border-b-[0px] transition-all duration-100 [box-shadow:0_10px_0_0_#1b6ff8,0_15px_0_0_#1b70f841] border-b-[1px] border-blue-400' + (currentPage === '/admin/users' || currentPage === '/supervisor/users' ? ' current-page' : '')
           }`}
           onClick={() => {
             if (Cookies.get('role') === 'Admin') {
               navigate('/admin/users');
+              setCurrentPage('/admin/users');
             } else {
               navigate('/supervisor/users');
+              setCurrentPage('/supervisor/users');
             }
           }}
         >
@@ -90,34 +89,36 @@ const Navbar = () => {
         <div
           className={`flex items-center px-1 ${
             isExpanded
-              ? 'button w-30 h-8 bg-blue-500 rounded-lg cursor-pointer select-none active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841] active:border-b-[0px] transition-all duration-100 [box-shadow:0_10px_0_0_#1b6ff8,0_15px_0_0_#1b70f841] border-b-[1px] border-blue-400'
+              ? 'button w-25 h-8 bg-blue-500 rounded-lg cursor-pointer select-none active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841] active:border-b-[0px] transition-all duration-100 [box-shadow:0_10px_0_0_#1b6ff8,0_15px_0_0_#1b70f841] border-b-[1px] border-blue-400' 
               : 'hidden'
           }`}
           onClick={() => {
             if (Cookies.get('role') === 'Admin') {
               navigate('/admin/departments');
+              setCurrentPage('/admin/departments');
             } else {
               navigate('/supervisor/departments');
+              setCurrentPage('/supervisor/departments');
             }
           }}
         >
           <DepartmentsIcon className="h-6 w-6" />
-          <span className="ml-3 inline-block whitespace-nowrap">
-            Departments
-          </span>
+          <span className="ml-3 inline-block whitespace-nowrap">Departments</span>
         </div>
         {/* Collapsed Button */}
         <div
           className={`flex items-center px-1 ${
             isExpanded
               ? 'hidden'
-              : 'button w-8 h-8 bg-blue-500 rounded-lg cursor-pointer select-none active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841] active:border-b-[0px] transition-all duration-100 [box-shadow:0_10px_0_0_#1b6ff8,0_15px_0_0_#1b70f841] border-b-[1px] border-blue-400'
+              : 'button w-8 h-8 bg-blue-500 rounded-lg cursor-pointer select-none active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841] active:border-b-[0px] transition-all duration-100 [box-shadow:0_10px_0_0_#1b6ff8,0_15px_0_0_#1b70f841] border-b-[1px] border-blue-400' + (currentPage === '/admin/departments' || currentPage === '/supervisor/departments' ? ' current-page' : '')
           }`}
           onClick={() => {
             if (Cookies.get('role') === 'Admin') {
               navigate('/admin/departments');
+              setCurrentPage('/admin/departments');
             } else {
               navigate('/supervisor/departments');
+              setCurrentPage('/supervisor/departments');
             }
           }}
         >
@@ -129,14 +130,16 @@ const Navbar = () => {
         <div
           className={`flex items-center px-1 ${
             isExpanded
-              ? 'button w-25 h-8 bg-blue-500 rounded-lg cursor-pointer select-none active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841] active:border-b-[0px] transition-all duration-100 [box-shadow:0_10px_0_0_#1b6ff8,0_15px_0_0_#1b70f841] border-b-[1px] border-blue-400'
+              ? 'button w-25 h-8 bg-blue-500 rounded-lg cursor-pointer select-none active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841] active:border-b-[0px] transition-all duration-100 [box-shadow:0_10px_0_0_#1b6ff8,0_15px_0_0_#1b70f841] border-b-[1px] border-blue-400' 
               : 'hidden'
           }`}
           onClick={() => {
             if (Cookies.get('role') === 'Admin') {
               navigate('/admin/archive');
+              setCurrentPage('/admin/archive');
             } else {
               navigate('/supervisor/archive');
+              setCurrentPage('/supervisor/archive');
             }
           }}
         >
@@ -148,13 +151,15 @@ const Navbar = () => {
           className={`flex items-center px-1 ${
             isExpanded
               ? 'hidden'
-              : 'button w-8 h-8 bg-blue-500 rounded-lg cursor-pointer select-none active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841] active:border-b-[0px] transition-all duration-100 [box-shadow:0_10px_0_0_#1b6ff8,0_15px_0_0_#1b70f841] border-b-[1px] border-blue-400'
+              : 'button w-8 h-8 bg-blue-500 rounded-lg cursor-pointer select-none active:translate-y-2  active:[box-shadow:0_0px_0_0_#1b6ff8,0_0px_0_0_#1b70f841] active:border-b-[0px] transition-all duration-100 [box-shadow:0_10px_0_0_#1b6ff8,0_15px_0_0_#1b70f841] border-b-[1px] border-blue-400' + (currentPage === '/admin/archive' || currentPage === '/supervisor/archive' ? ' current-page' : '')
           }`}
           onClick={() => {
             if (Cookies.get('role') === 'Admin') {
               navigate('/admin/archive');
+              setCurrentPage('/admin/archive');
             } else {
               navigate('/supervisor/archive');
+              setCurrentPage('/supervisor/archive');
             }
           }}
         >
