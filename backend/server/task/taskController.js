@@ -1,20 +1,3 @@
-
-// const { PrismaClient, PrismaClientKnownRequestError } = require('@prisma/client')
-// const prisma = new PrismaClient()
-
-// module.exports = {
-//     getAllTasks: async (req, res) => {
-//         try {
-//             const tasks = await prisma.task.findMany()
-//             res.status(200).json(tasks)
-//         } catch (error) {
-//             res.status(500).json({ error: 'An error occurred while retrieving tasks' })
-//         }
-//     },
-//     // other functions...
-// }
-
-
 // import { PrismaClient } from '@prisma/client'
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
@@ -161,45 +144,5 @@ module.exports = {
     },
 
  
-
-
-    // getTaskById: async (req, res) => {
-    //     try {
-    //         const task = await prisma.task.findUnique({
-    //             where: {
-    //                 archived: false,
-    //                 id: Number(req.params.id),
-    //             },
-    //         });
-    
-    //         if (!task) {
-    //             return res.status(404).json({ message: 'Task not found or is archived' });
-    //         }
-    
-    //         const taskDepartment = await prisma.departmentTaskMapping.findMany({
-    //             where: {
-    //                 taskId: Number(req.params.id),
-    //             },
-    //         });
-    
-    //         const departments = await Promise.all(
-    //             taskDepartment.map(async mapping => {
-    //                 const department = await prisma.department.findUnique({
-    //                     where: {
-    //                         id: mapping.departmentId,
-    //                     },
-    //                 });
-    //                 return department.name;
-    //             })
-    //         );
-    
-    //         task.departmentName = departments;
-    
-    //         res.status(200).json(task);
-    //     } catch (error) {
-    //         console.log(error);
-    //         res.status(500).json({ message: 'Error retrieving task' });
-    //     }
-    // }
 
 };
