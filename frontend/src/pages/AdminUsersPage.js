@@ -23,7 +23,8 @@ const SendToArchiveBoxButton = ({ userId, currUserId }) => {
           ? 'opacity-50 cursor-not-allowed'
           : 'active:translate-y-2 active:[box-shadow:0_0px_0_0_#4B5563,0_0px_0_0_#4B556341] active:border-b-[0px] transition-all duration-100 [box-shadow:0_10px_0_0_#4B5563,0_15px_0_0_#4B556341] border-b-[1px] border-gray-400'
       }`}
-      onClick={async () => {
+      onClick={async (event) => {
+        event.stopPropagation();
         setIsArchiving(true);
         await axios.put(`http://localhost:5010/user/archive/${userId}`);
         window.location.reload();
@@ -69,9 +70,9 @@ const AdminUsersPage = () => {
     setSearchTerm(event.target.value);
   };
 
-  const employeeHeadings = ['Name', 'Department', 'Role', 'Status', 'Edit', 'Archive'];
-  const supervisorHeadings = ['Name', 'Department', 'Role', 'Status', 'Edit', 'Archive'];
-  const adminHeadings = ['Name', 'Department', 'Role', 'Status', 'Edit', 'Archive'];
+  const employeeHeadings = ['Name', 'Department', 'Edit', 'Archive'];
+  const supervisorHeadings = ['Name', 'Edit', 'Archive'];
+  const adminHeadings = ['Name', 'Edit', 'Archive'];
 
   const employeeData = isLoading
     ? [{}]
@@ -81,7 +82,7 @@ const AdminUsersPage = () => {
           id: user.id,
           Name: user.name,
           Department: user.departmentName.join(', '),
-          Role: (user.role.charAt(0).toUpperCase() + user.role.slice(1).toLowerCase()),
+          Role: user.role.charAt(0).toUpperCase() + user.role.slice(1).toLowerCase(),
           Status: '0/0',
           Edit: <EditUserModal user={user} />,
           Archive: <SendToArchiveBoxButton userId={user.id} currUserId={currUserId} />,
@@ -95,7 +96,7 @@ const AdminUsersPage = () => {
           id: user.id,
           Name: user.name,
           Department: user.departmentName.join(', '),
-          Role: (user.role.charAt(0).toUpperCase() + user.role.slice(1).toLowerCase()),
+          Role: user.role.charAt(0).toUpperCase() + user.role.slice(1).toLowerCase(),
           Status: '0/0',
           Edit: <EditUserModal user={user} />,
           Archive: <SendToArchiveBoxButton userId={user.id} currUserId={currUserId} />,
@@ -109,7 +110,7 @@ const AdminUsersPage = () => {
           id: user.id,
           Name: user.name,
           Department: user.departmentName.join(', '),
-          Role: (user.role.charAt(0).toUpperCase() + user.role.slice(1).toLowerCase()),
+          Role: user.role.charAt(0).toUpperCase() + user.role.slice(1).toLowerCase(),
           Status: '0/0',
           Edit: <EditUserModal user={user} />,
           Archive: <SendToArchiveBoxButton userId={user.id} currUserId={currUserId} />,
@@ -137,7 +138,7 @@ const AdminUsersPage = () => {
           <h1 className="mb-4 text-white text-2xl font-bold">Onboarding Employees</h1>
           {/*Add and Archive buttons*/}
           <div className="flex justify-between items-center">
-            <AddUserButton />
+            <AddUserButton userRole={'Employee'} />
             <button
               className={`flex mb-8 w-52 h-10 text-white justify-between items-center bg-gray-500 rounded-lg cursor-pointer select-none ${
                 isArchivingEmployees
@@ -168,7 +169,7 @@ const AdminUsersPage = () => {
           <h1 className="mb-4 text-white text-2xl font-bold">Supervisors</h1>
           {/*Add and Archive buttons*/}
           <div className="flex justify-between items-center">
-            <AddUserButton />
+            <AddUserButton userRole={'Supervisor'} />
             <button
               className={`flex mb-8 w-56 h-10 text-white justify-between items-center bg-gray-500 rounded-lg cursor-pointer select-none ${
                 isArchivingSupervisors
@@ -198,7 +199,7 @@ const AdminUsersPage = () => {
           <h1 className="mb-4 text-white text-2xl font-bold">Admins</h1>
           {/*Add and Archive buttons*/}
           <div className="flex justify-between items-center">
-            <AddUserButton />
+            <AddUserButton userRole={'Admin'} />
           </div>
           {/*Table*/}
           <Table data={adminData} headings={adminHeadings} isLoading={isLoading} />

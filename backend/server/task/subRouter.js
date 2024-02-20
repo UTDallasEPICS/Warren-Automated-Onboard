@@ -1,23 +1,12 @@
-
-// const taskController = require('./taskController');
-
-// module.exports = {
-//     getTaskRoutes: function(router) {
-//         router.get('/getAllTasks', taskController.getAllTasks);
-//     }
-// };
-
 const controller = require('./taskController');
 const addRoutes = (router) => {
     router.post('/task', controller.addTask);
-    router.get('/tasks', controller.getAllTasks);
 
     router.get('/task/:id', controller.getTaskByID);
+    router.get('/tasks', controller.getAllTasks);
     router.delete('/task/:id', controller.deleteTask);
-
-    router.put('/updateTask/:id', controller.updateTask);
-
-
+    router.get('/department/:dept/tasks', controller.getDepartmentTasks);
+    router.get('/department/tasks', controller.getAllDepartmentTasks);
 
    // router.get('/departments/tasks', controller.getAllDepartmentsTasks)
    // router.get('/department/tasks', controller.getAllDepartmentTasks)
@@ -27,4 +16,3 @@ const addRoutes = (router) => {
 module.exports = {
     addRoutes,
   };
-
