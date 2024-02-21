@@ -76,20 +76,31 @@ module.exports = {
   },
 
   archiveDepartment: async (req, res) => {
-    const { id } = req.params;
+    const { deptid } = req.params;
     const { authorization } = req.headers;
     try {
-      console.log(`User ${authorization} archived department ${id}`);
-      console.log(req.headers);
-      const archivedDepartment = await prisma.department.update({
+      //console.log(`User ${authorization} archived department ${deptid}`);
+      //console.log(req.headers);
+      const archivedDepartment = await prisma.department.updateMany({
         where: {
-          id: parseInt(id),
+          id: deptid,
         },
         data: {
           archived: true,
         },
       });
-      res.status(200).json(archivedDepartment);
+
+      const depttaskmap = await prisma.departmentTaskMapping.updateMany({
+        where: {
+          departmentId: deptid,
+        },
+        data: {
+          archived: true
+        },
+      });
+
+
+      res.status(200).json({ message: 'Successfully archived department' });
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: 'Error archiving department' });
