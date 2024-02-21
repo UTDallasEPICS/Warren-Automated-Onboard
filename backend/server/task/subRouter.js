@@ -1,7 +1,7 @@
 const controller = require('./taskController');
 const addRoutes = (router) => {
     router.post('/task', controller.addTask);
-
+    router.get('/tasks/:id', controller.getUsersTasks);
     router.get('/task/:id', controller.getTaskByID);
     router.get('/tasks', controller.getAllTasks);
     router.delete('/task/:id', controller.deleteTask);
