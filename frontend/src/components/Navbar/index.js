@@ -1,99 +1,161 @@
-// import React from 'react';
-// import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
-// import Departments from '../../pages/departments';
-// import Users from '../../pages/users';
-// import Archive from '../../pages/archive';
-// import LoginButton from '../LogIn';
-// import LogoutButton from '../Logout';
-// import Profile from '../Profile';
-// import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import Button from '../Button';
+import { useNavigate } from 'react-router-dom';
+import UsersIcon from '../../icons/UsersIcon';
+import DepartmentsIcon from '../../icons/DepartmentsIcon';
+import MenuIcon from '../../icons/MenuIcon';
+import CrossIcon from '../../icons/CrossIcon';
+import ArchiveBoxIcon from '../../icons/ArchiveBoxIcon';
+import { animated, useSpring } from 'react-spring';
+import ProfileModal from '../ProfileModal';
+import Cookies from 'js-cookie';
+import '../../styles/Navbar.css';
+import clsx from 'clsx'
 
-// const Navbar = () => {
-// 	return (
-// 		<Tabs isLazy>
-// 			{/* <TabList>
-// 				<Tab>Users</Tab>
-// 				<Tab>Departments</Tab>
-// 				<Tab>Archive</Tab>
-// 				<Tab>LogIn</Tab>
-// 				<Tab>LogOut</Tab>
-// 				<Tab>Profile</Tab>
-// 			</TabList> */}
+const Navbar = () => {
+  const navigate = useNavigate();
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [currentPage, setCurrentPage] = useState('');
 
-// 			<TabList>
-// 				<Tab><Link to="/users">Users</Link></Tab>
-// 				<Tab><Link to="/departments">Departments</Link></Tab>
-// 				<Tab><Link to="/archive">Archive</Link></Tab>
-// 				{/* <Tab><Link to="/login">LogIn</Link></Tab> */}
-// 				{/* <Tab><Link to="/logout">Log Out</Link></Tab> */}
-// 				<Tab><Link to="/profile">Profile</Link></Tab>
-// 			</TabList>
-		
-// 			{/* <TabPanels>
+  const iconTransition = useSpring({
+    transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)',
+    config: {
+      tension: 0, // Adjust tension for rotation speed
+      friction: 5, // Adjust friction for rotation speed
+    },
+  });
 
-// 				<TabPanel>
-// 					<Users />
-// 				</TabPanel>
+  const handleMenuClick = () => {
+    setIsExpanded(!isExpanded);
+  };
 
-// 				<TabPanel>
-// 					<Departments />
-// 				</TabPanel>
+  return (
+    <>
+      <div className={`flex flex-col h-full fixed lg:justify-between p-2 navbar-styling hidden lg:block`}>
+        <div className="lg:h-1/3"></div>
+        <div className="flex flex-col justify-center items-center space-y-4 lg:h-1/3">
+          {/* Users */}
+          <Button
+            extraStyling={`py-3 px-3`}
+            onClick={() => {
+              if (Cookies.get('role') === 'Admin') {
+                navigate('/admin/users');
+                setCurrentPage('/admin/users');
+              } else {
+                navigate('/supervisor/users');
+                setCurrentPage('/supervisor/users');
+              }
+            }}
+            tooltip="Users"
+          >
+            <UsersIcon />
+          </Button>
 
-// 				<TabPanel>
-// 					<Archive />
-// 				</TabPanel>
+          {/* Departments */}
+          <Button
+            extraStyling={`py-3 px-3`}
+            onClick={() => {
+              if (Cookies.get('role') === 'Admin') {
+                navigate('/admin/departments');
+                setCurrentPage('/admin/departments');
+              } else {
+                navigate('/supervisor/departments');
+                setCurrentPage('/supervisor/departments');
+              }
+            }}
+            tooltip="Departments"
+          >
+            <DepartmentsIcon className="h-6 w-6" />
+          </Button>
 
-// 				<TabPanel>
-// 					<LoginButton />
-// 				</TabPanel>
+          {/* Archive */}
+          {/* <Button
+            extraStyling={`py-3 px-3`}
+            onClick={() => {
+              if (Cookies.get('role') === 'Admin') {
+                navigate('/admin/archive');
+                setCurrentPage('/admin/archive');
+              } else {
+                navigate('/supervisor/archive');
+                setCurrentPage('/supervisor/archive');
+              }
+            }}
+            tooltip="Archive"
+          >
+            <ArchiveBoxIcon className="h-6 w-6" />
+          </Button> */}
+        </div>
 
-// 				<TabPanel>
-// 					<LogoutButton />
-// 				</TabPanel>
+        {/* Profile */}
+        <div className="lg:h-1/3 items-bottom flex flex-col justify-end">
+          <ProfileModal isExpanded={isExpanded} />
+        </div>
+      </div>
 
-// 				<TabPanel>
-// 					<Profile />
-// 				</TabPanel>
+      <div className={`fixed bottom-0 z-10 p-2 h-auto w-full fixed block lg:hidden navbar-styling`}>
+        <div className="flex flex-row justify-between">
+          <div className="lg:h-1/3"></div>
+          <div className="flex flex-row justify-center space-x-4 items-center lg:h-1/3">
+            {/* Users */}
+            <Button
+              extraStyling={`py-3 px-3`}
+              onClick={() => {
+                if (Cookies.get('role') === 'Admin') {
+                  navigate('/admin/users');
+                  setCurrentPage('/admin/users');
+                } else {
+                  navigate('/supervisor/users');
+                  setCurrentPage('/supervisor/users');
+                }
+              }}
+              tooltip="Users"
+            >
+              <UsersIcon />
+            </Button>
 
-// 			</TabPanels> */}
-// 		</Tabs>
-// 	);
-// };
+            {/* Departments */}
+            <Button
+              extraStyling={`py-3 px-3`}
+              onClick={() => {
+                if (Cookies.get('role') === 'Admin') {
+                  navigate('/admin/departments');
+                  setCurrentPage('/admin/departments');
+                } else {
+                  navigate('/supervisor/departments');
+                  setCurrentPage('/supervisor/departments');
+                }
+              }}
+              tooltip="Departments"
+            >
+              <DepartmentsIcon className="h-6 w-6" />
+            </Button>
 
-// export default Navbar;
+            {/* Archive */}
+            {/* <Button
+              extraStyling={`py-3 px-3`}
+              onClick={() => {
+                if (Cookies.get('role') === 'Admin') {
+                  navigate('/admin/archive');
+                  setCurrentPage('/admin/archive');
+                } else {
+                  navigate('/supervisor/archive');
+                  setCurrentPage('/supervisor/archive');
+                }
+              }}
+              tooltip="Archive"
+            >
+              <ArchiveBoxIcon className="h-6 w-6" />
+            </Button> */}
+          </div>
 
-
-import React from 'react';
-import { Tabs, TabList, Tab, Button, useDisclosure } from '@chakra-ui/react'
-import Profile from '../Profile';
-import { Link } from 'react-router-dom';
-
-const Navbar = ({ userRole }) => {
-	const { isOpen, onOpen, onClose } = useDisclosure();
-
-	return (
-		// <Tabs isLazy>
-		// 	<TabList>
-		// 		<Tab><Link to="/users">Users</Link></Tab>
-		// 		<Tab><Link to="/departments">Departments</Link></Tab>
-		// 		<Tab><Link to="/archive">Archive</Link></Tab>
-		// 		<Button onClick={onOpen}>Profile</Button>
-		// 	</TabList>
-
-		// 	<Profile isOpen={isOpen} onClose={onClose} />
-		// </Tabs>
-
-		<Tabs isLazy>
-			<TabList>
-				<Link to="/users"><Tab>Users</Tab></Link>
-				<Link to="/departments"><Tab>Departments</Tab></Link>
-				<Link to="/archive"><Tab>Archive</Tab></Link>
-				<Button onClick={onOpen}>Profile</Button>
-			</TabList>
-	
-			<Profile isOpen={isOpen} onClose={onClose} userRole={userRole}/>
-	  	</Tabs>
-	);
+          {/* Profile */}
+          <div className="lg:h-1/3 items-bottom flex flex-col justify-end">
+            <ProfileModal isExpanded={isExpanded} />
+          </div>
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default Navbar;
