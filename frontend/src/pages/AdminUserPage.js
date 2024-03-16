@@ -7,6 +7,7 @@ import { TaskTable } from '../components/Table';
 import Button from '../components/Button';
 import EmployeeAddTask from '../components/EmployeeAddTask';
 import EmployeeDeleteTask from '../components/EmployeeDeleteTask';
+import EditUserTask from '../components/EditUserTask';
 
 function UserPage() {
   const { id } = useParams();
@@ -204,7 +205,11 @@ function UserPage() {
               </div>
             </div>
           </Section>
+          
           <Section>
+          
+          <div className="flex justify-between items-end">
+            <div>
             <div className="flex justify-between items-end mb-2">
               <div className="flex-col ">
                 <h1 className="text-2xl text-warrenBlue font-bold">
@@ -216,12 +221,27 @@ function UserPage() {
                 </h1>
               </div>
             </div>
+            </div>
+
+            <div className = "flex justify-center">
+              <div>
+                <EditUserTask />
+              </div>
+              </div>
+              
+              </div>
+            
             <TaskTable
               columns={columns}
               data={data}
               setSelectedTaskIds={setSelectedTaskIds}
             />
-          </Section>
+
+            </Section>
+            
+          
+
+
         </div>
       </div>
     </>

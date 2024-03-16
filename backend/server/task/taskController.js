@@ -169,8 +169,11 @@ module.exports = {
           userId: parseInt(id),
         },
       });
+      console.log('take' + take);
+      console.log('total tasks' + totalTasks);
 
       const totalPages = Math.ceil(totalTasks / take);
+      console.log('total pages ' + totalPages);
 
       const taskIds = await prisma.onboardingEmployeeTaskMapping.findMany({
         where: {
