@@ -13,7 +13,7 @@ const EditUserTask = () => {
   const [supervisors, setSupervisors] = React.useState([]);
   const [selectedSupervisors, setSelectedSupervisors] = React.useState([]);
   const [supervisorsOptions, setSupervisorsOptions] = React.useState([]);
-  const [selectedEmployees, setSelectedEmployees] = React.useState([]);
+  const [selectedEmployee, setSelectedEmployee] = React.useState([]);
   const [selectedTask, setSelectedTask] = React.useState(null);
   const [formErrors, setFormErrors] = React.useState({});
   const [isLoading, setIsLoading] = React.useState(false);
@@ -47,9 +47,8 @@ const EditUserTask = () => {
   };
 
   React.useEffect(() => {
-    
     axios
-      .get(`http://localhost:5010/tasks`)
+      .get(`http://localhost:5010/tasks/user-employee/${selectedEmployee.id}`)
       .then(res => {
         setSelectedTask(
           res.data.map((task, index) => ({
@@ -141,7 +140,7 @@ const EditUserTask = () => {
                 menuPortalTarget={document.body}
                 styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
               />
-              {selectedEmployees && (
+              {selectedEmployee && (
                 <Section>
                   <form
                     onSubmit={e => {
