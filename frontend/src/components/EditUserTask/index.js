@@ -9,12 +9,12 @@ import Section from '../Section';
 
 const EditUserTask = () => {
   const [isOpen, setIsOpen] = React.useState(false);
-  const [tasks, setTasks] = React.useState('');
+  const [tasksOptions, setTasksOptions] = React.useState([]);
+  const [selectedTask, setSelectedTask] = React.useState(null);
   const [supervisors, setSupervisors] = React.useState([]);
   const [selectedSupervisors, setSelectedSupervisors] = React.useState([]);
   const [supervisorsOptions, setSupervisorsOptions] = React.useState([]);
-  const [selectedEmployee, setSelectedEmployee] = React.useState([]);
-  const [selectedTask, setSelectedTask] = React.useState(null);
+  const [employee, setEmployee] = React.useState([]);
   const [formErrors, setFormErrors] = React.useState({});
   const [isLoading, setIsLoading] = React.useState(false);
   
@@ -48,9 +48,9 @@ const EditUserTask = () => {
 
   React.useEffect(() => {
     axios
-      .get(`http://localhost:5010/tasks/user-employee/${selectedEmployee.id}`)
+      .get(`http://localhost:5010/tasks/user-employee/${employee.id}`)
       .then(res => {
-        setSelectedTask(
+        setTasksOptions(
           res.data.map((task, index) => ({
             value: task.id || index,
             label: task.description,
@@ -135,12 +135,12 @@ const EditUserTask = () => {
 
             <div className="p-6">
               <Select
-                options={tasks}
+                options={tasksOptions}
                 onChange={handleSelectChange}
                 menuPortalTarget={document.body}
                 styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
               />
-              {selectedEmployee && (
+              {selectedTask && (
                 <Section>
                   <form
                     onSubmit={e => {
