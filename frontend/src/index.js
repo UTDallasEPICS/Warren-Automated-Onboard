@@ -13,8 +13,8 @@ root.render(
     {/* <ChakraProvider > */}
       <BrowserRouter>
         <Auth0Provider
-          domain="dev-723z7f5wvs37uaci.us.auth0.com"
-          clientId="Ehb9dR3K2X6AXwZzCXiyE1f6z4NcXGYN"
+          domain="the-warren-center.us.auth0.com"
+          clientId="hvsbhpQc5ImpK85Gpoo3Mrlebbfs1ogZ"
           cacheLocation="localstorage"
           authorizationParams={{
             redirect_uri: `http://localhost:3000/login-redirect`,
