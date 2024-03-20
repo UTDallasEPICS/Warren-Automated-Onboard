@@ -8,6 +8,7 @@ import Select from 'react-select';
 import Section from '../Section';
 
 const EditUserTask = employeeID => {
+  console.log('employeeID', employeeID);
   const [isOpen, setIsOpen] = React.useState(false);
   const [tasksOptions, setTasksOptions] = React.useState([]);
   const [selectedTask, setSelectedTask] = React.useState(null);
@@ -16,7 +17,7 @@ const EditUserTask = employeeID => {
   const [supervisorsOptions, setSupervisorsOptions] = React.useState([]);
   const [formErrors, setFormErrors] = React.useState({});
   const [isLoading, setIsLoading] = React.useState(false);
-  
+
   const [formData, setFormData] = React.useState({
     description: '',
     supervisors: [],
@@ -47,7 +48,7 @@ const EditUserTask = employeeID => {
 
   React.useEffect(() => {
     axios
-      .get(`http://localhost:5010/tasks/user-employee/${employeeID}`)
+      .get(`http://localhost:5010/tasks/user-employee/${employeeID.employeeID}`)
       .then(res => {
         setTasksOptions(
           res.data.map((task, index) => ({
@@ -59,7 +60,7 @@ const EditUserTask = employeeID => {
       .catch(err => {
         console.log(err);
       });
-      axios
+    axios
       .get(`http://localhost:5010/users/supervisors`)
       .then(res => {
         setSupervisorsOptions(
@@ -81,7 +82,8 @@ const EditUserTask = employeeID => {
             description: res.data.description,
             supervisors: res.data.supervisor.map(name => ({
               label: name,
-              value: supervisorsOptions.find(option => option.label === name).value,
+              value: supervisorsOptions.find(option => option.label === name)
+                .value,
             })),
           });
           setIsLoading(false);
@@ -178,29 +180,15 @@ const EditUserTask = employeeID => {
                       <label>Description</label>
                       <input
                         className="h-9 rounded border-2 hover:border-blue-400"
-                        placeholder="  Type..."
+                        placeholder="Type..."
                         type="text"
                         value={formData.name}
                         onChange={handleDescriptionChange}
                       />
-                      {formErrors.name && (
+                      {formErrors.description && (
                         <p style={{ color: 'red' }}>{formErrors.name}</p>
                       )}
                     </div>
-                    
-                    {/* <div className="flex flex-col">
-                      <label>Supervisor</label>
-                      <input
-                        className="h-9 rounded border-2 hover:border-blue-400"
-                        placeholder="  Type..."
-                        type="text"
-                        value={formData.name}
-                        onChange={handleInputChange}
-                      />
-                      {formErrors.name && (
-                        <p style={{ color: 'red' }}>{formErrors.name}</p>
-                      )}
-                    </div> */}
 
                     {console.log('supervisors', supervisors)}
                     <div className="flex flex-col">
@@ -222,7 +210,7 @@ const EditUserTask = employeeID => {
                         <p style={{ color: 'red' }}>{formErrors.supervisors}</p>
                       )}
                     </div>
-                    
+
                     <div className="flex justify-center mt-6">
                       <Button
                         type="submit"
