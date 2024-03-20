@@ -225,7 +225,7 @@ function UserPage() {
 
             <div className = "flex justify-center">
               <div>
-                <EditUserTask />
+                <EditUserTask employeeID={id}/>
               </div>
               </div>
               

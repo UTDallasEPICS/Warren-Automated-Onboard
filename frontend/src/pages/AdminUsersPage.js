@@ -294,7 +294,7 @@
 //             className="bg-white bg-opacity-50 rounded-lg"
 //           >
 //             <TableHeader>
-//               <TableRow>
+//               <TableRoFw>
 //                 <TableHead>Name</TableHead>
 //                 <TableHead>Edit</TableHead>
 //                 <TableHead>Archive</TableHead>
