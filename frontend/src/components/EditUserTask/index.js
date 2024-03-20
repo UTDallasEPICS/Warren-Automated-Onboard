@@ -23,7 +23,7 @@ const EditUserTask = () => {
     supervisors: [],
   });
 
-  const handleInputChange = e => {
+  const handleDescriptionChange = e => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -149,7 +149,7 @@ const EditUserTask = () => {
 
                       axios
                         .put(
-                          `http://localhost:5010/user/task/update-employee-task/:id/${selectedTask.value}`,
+                          `http://localhost:5010/user/task/update-employee-task/${selectedTask.value}`,
                           {
                             description: formData.description,
                             supervisorId: selectedSupervisors.map(
@@ -182,7 +182,7 @@ const EditUserTask = () => {
                         placeholder="  Type..."
                         type="text"
                         value={formData.name}
-                        onChange={handleInputChange}
+                        onChange={handleDescriptionChange}
                       />
                       {formErrors.name && (
                         <p style={{ color: 'red' }}>{formErrors.name}</p>
@@ -211,7 +211,6 @@ const EditUserTask = () => {
                       ) : (
                         <Select
                           options={supervisorsOptions}
-                          isMulti
                           defaultValue={formData.supervisors}
                           onChange={handleSupervisorChange}
                           menuPortalTarget={document.body}
