@@ -14,7 +14,7 @@ const EditUserTask = () => {
   const [supervisors, setSupervisors] = React.useState([]);
   const [selectedSupervisors, setSelectedSupervisors] = React.useState([]);
   const [supervisorsOptions, setSupervisorsOptions] = React.useState([]);
-  const [employee, setEmployee] = React.useState([]);
+  const [employeeID, setEmployeeID] = React.useState([]);
   const [formErrors, setFormErrors] = React.useState({});
   const [isLoading, setIsLoading] = React.useState(false);
   
@@ -48,7 +48,7 @@ const EditUserTask = () => {
 
   React.useEffect(() => {
     axios
-      .get(`http://localhost:5010/tasks/user-employee/${employee.id}`)
+      .get(`http://localhost:5010/tasks/user-employee/${employeeID}`)
       .then(res => {
         setTasksOptions(
           res.data.map((task, index) => ({
