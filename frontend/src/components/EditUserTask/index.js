@@ -7,14 +7,13 @@ import axios from 'axios';
 import Select from 'react-select';
 import Section from '../Section';
 
-const EditUserTask = () => {
+const EditUserTask = employeeID => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [tasksOptions, setTasksOptions] = React.useState([]);
   const [selectedTask, setSelectedTask] = React.useState(null);
   const [supervisors, setSupervisors] = React.useState([]);
   const [selectedSupervisors, setSelectedSupervisors] = React.useState([]);
   const [supervisorsOptions, setSupervisorsOptions] = React.useState([]);
-  const [employeeID, setEmployeeID] = React.useState([]);
   const [formErrors, setFormErrors] = React.useState({});
   const [isLoading, setIsLoading] = React.useState(false);
   
