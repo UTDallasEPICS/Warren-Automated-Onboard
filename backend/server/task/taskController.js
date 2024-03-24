@@ -149,6 +149,7 @@ module.exports = {
           id: parseInt(id),
         },
       });
+      //console.log('task' + task);
       res.status(200).json(task);
     } catch (err) {
       res.status(400).json({ error: 'Error getting task by id' });

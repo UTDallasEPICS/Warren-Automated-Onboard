@@ -73,6 +73,7 @@ const EditUserTask = employeeID => {
       .catch(err => {
         console.log(err);
       });
+
     if (selectedTask) {
       setIsLoading(true);
       axios
@@ -80,11 +81,14 @@ const EditUserTask = employeeID => {
         .then(res => {
           setFormData({
             description: res.data.description,
-            supervisors: res.data.supervisor.map(name => ({
-              label: name,
-              value: supervisorsOptions.find(option => option.label === name)
-                .value,
-            })),
+            supervisors: res.data.supervisors
+              ? res.data.supervisors.map(name => ({
+                  label: name,
+                  value: supervisorsOptions.find(
+                    option => option.label === name
+                  ).value,
+                }))
+              : console.log('<3'),
           });
           setIsLoading(false);
         })
@@ -148,6 +152,8 @@ const EditUserTask = employeeID => {
                       e.preventDefault();
                       const errors = {};
 
+                      console.log('Task ID ' + selectedTask.value);
+
                       axios
                         .put(
                           `http://localhost:5010/user/task/update-employee-task/${selectedTask.value}`,
@@ -173,6 +179,8 @@ const EditUserTask = employeeID => {
                         })
                         .catch(err => {
                           console.log(err);
+                          console.log(formData.description);
+                          //console.log(supervisor.value)
                         });
                     }}
                   >
