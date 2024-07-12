@@ -40,12 +40,12 @@ export default function Navbar() {
         </Tooltip>
       </div>
       <Tooltip
-        // label="Archive"
-        label="Archive feature under construction"
+        label="Archive"
+        //label="Archive feature under construction"
         openDelay="700"
       >
         <ActionIcon
-          disabled={true}
+          //disabled={true}
           variant="filled"
           size="xl"
           color={buttonClass('/admin/archive')}

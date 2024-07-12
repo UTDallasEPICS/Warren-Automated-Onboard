@@ -20,9 +20,11 @@ const addRoutes = router => {
   router.get('/getAllArchivedAdmins', controller.getAllArchivedAdmins);
   router.get('/getUser/:id', controller.getUser);
   router.get('/getArchivedUser/:id', controller.getArchivedUser);
+  router.get('/checkForEmpsWithArchivedDept', controller.checkForEmpsWithArchivedDept);
 
   router.patch('/archiveUsers', controller.archiveUsers);
   router.patch('/unArchiveUsers', controller.unArchiveUsers);
+  router.patch('/unArchiveEmployees', controller.unArchiveEmployees);
 
   router.put('/updateEmployee/:id', controller.updateEmployee);
   router.put('/updateSupervisor/:id', controller.updateSupervisor);

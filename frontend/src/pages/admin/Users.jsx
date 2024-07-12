@@ -614,8 +614,8 @@ export function ArchiveSelectedUsers({
   return (
     <div>
       <Tooltip
-        // label={allSelectedRows.length === 0 ? 'Select Rows' : 'Archive Users'}
-        label={allSelectedRows.length === 0 ? 'Select Rows' : 'Delete User(s)'}
+        label={allSelectedRows.length === 0 ? 'Select Rows' : 'Archive Users'}
+        //label={allSelectedRows.length === 0 ? 'Select Rows' : 'Delete User(s)'}
         openDelay="700"
       >
         <ActionIcon
@@ -626,8 +626,8 @@ export function ArchiveSelectedUsers({
           loading={isLoading}
           onClick={open}
         >
-          {/* <SendToArchiveIcon /> */}
-          <DeleteIcon />
+          <SendToArchiveIcon />
+          {/* <DeleteIcon /> */}
         </ActionIcon>
       </Tooltip>
       <Modal
@@ -639,7 +639,7 @@ export function ArchiveSelectedUsers({
         padding="md"
       >
         <span>Are you sure you want to </span>
-        <span className="font-bold">delete </span>
+        <span className="font-bold">archive </span>
         <span>all selected users?</span>
         <div className="flex mt-3 justify-between">
           <Button onClick={handleClick} color="red">

@@ -893,6 +893,39 @@ module.exports = {
     }
   },
 
+  checkForEmpsWithArchivedDept: async (req, res) => {
+    const { allSelectedUsers } = req.body;
+    if (!req.headers.authorization) {
+      return res.status(400).json({ message: 'No Authorization Header Found' });
+    }
+    if (await isRoleAdmin(req.headers.authorization.split(' ')[1])) {
+
+      let archivedDepartments = [];
+      console.log(allSelectedUsers)
+      for (let i = 0; i < allSelectedUsers.length; i++) {
+        try {
+          const dept = await prisma.department.findFirst({
+            where: {
+              id: allSelectedUsers[i].departmentId,
+              archived: true
+            }
+          });
+          archivedDepartments.push(dept);
+
+
+          res.status(200).json(archivedDepartments);
+        }
+        catch (error) {
+          console.error('Errored checking for employees mapped to archived departments', error);
+          res.status(500).json({ message: 'Errored checking for employees mapped to archived departments' });
+        }
+      }
+    }
+    else {
+      res.status(401).json({ message: 'Not Authorized for this Data' });
+    }
+  },
+
   //PATCH
   archiveUsers: async (req, res) => {
     const { allSelectedUsers } = req.body;
@@ -1106,6 +1139,103 @@ module.exports = {
     }
   },
 
+  unArchiveEmployees: async (req, res) => {
+    const { allSelectedUsers } = req.body;
+    if (!req.headers.authorization) {
+      return res.status(400).json({ message: 'No Authorization Header Found' });
+    }
+    if (await isRoleAdmin(req.headers.authorization.split(' ')[1])) {
+      let results = [];
+      for (let i = 0; i < allSelectedUsers.length; i++) {
+        //try {
+        const user = await prisma.user.findFirst({
+          where: {
+            id: parseInt(allSelectedUsers[i]),
+          },
+          include: {
+            DepartmentUserMapping: true
+          }
+        });
+
+        console.log(user)
+
+        try {
+          const dept = await prisma.department.findFirst({
+            where: {
+              id: user.DepartmentUserMapping.departmentId,
+              archived: true
+            }
+          });
+          console.log("dept: ", dept)
+          if (dept) {
+            res.status(406).json({ message: 'One of the users is mapped to an archived dept' });
+          }
+          else {
+            try {
+              let userUpdate;
+              userUpdate = await prisma.user.update({
+                where: {
+                  id: parseInt(allSelectedUsers[i]),
+                },
+                data: {
+                  DepartmentUserMapping: {
+                    update: {
+                      where: {
+                        userId: parseInt(allSelectedUsers[i]),
+                      },
+                      data: {
+                        archived: false,
+                      },
+                    },
+                  },
+                  OnboardingEmployeeTaskMapping: {
+                    updateMany: {
+                      where: {
+                        userId: parseInt(allSelectedUsers[i]),
+                      },
+                      data: {
+                        archived: false,
+                      },
+                    },
+                  },
+                  archived: false,
+                },
+              });
+
+              if (userUpdate === null || userUpdate.length === 0) {
+                results.push({
+                  userId: allSelectedUsers[i],
+                  status:
+                    'No user of this ID available or user is already un-archived',
+                });
+              } else {
+                console.error('User UnArchived Successfully');
+                results.push({
+                  userId: allSelectedUsers[i],
+                  status: 'User UnArchived Successfully',
+                });
+              }
+
+              res.status(200).json(results);
+
+            } catch (error) {
+              console.error('Errored UnArchiving User by ID', error);
+              res.status(500).json({ message: 'Errored UnArchiving User by ID' });
+            }
+          }
+        }
+        catch (error) {
+          console.error('Errored checking for employees mapped to archived departments', error);
+          res.status(500).json({ message: 'Errored checking for employees mapped to archived departments' });
+        }
+
+      }
+
+
+    } else {
+      res.status(401).json({ message: 'Not Authorized for this Data' });
+    }
+  },
   //PUT
   updateEmployee: async (req, res) => {
     const { id } = req.params;

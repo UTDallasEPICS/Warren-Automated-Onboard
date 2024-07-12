@@ -25,13 +25,14 @@ export function UnArchiveSelectedUsers({
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [opened, { open, close }] = useDisclosure();
+  const [archivedDeptCheck, setArchivedDeptCheck] = useState(null);
 
   const handleClick = async () => {
     for (let i = 0; i < allSelectedRows.length; i++) {
       try {
         setIsLoading(true);
         await axios.patch(
-          `${import.meta.env.VITE_APP_EXPRESS_BASE_URL}/unArchiveUsers/`,
+          `${import.meta.env.VITE_APP_EXPRESS_BASE_URL}/unArchiveEmployees/`,
           { allSelectedUsers: allSelectedRows },
           {
             headers: {
@@ -39,15 +40,41 @@ export function UnArchiveSelectedUsers({
             },
           }
         );
-        setIsLoading(false);
-        setReloadData(true);
+
       } catch (error) {
         console.error('errored archiving users', error);
+        alert("Cannot Restore! Please remove employees designated to archived departments before restoring.")
       }
+      setIsLoading(false);
+      setReloadData(true);
       setAllSelectedRows([]);
       close();
     }
   };
+
+  // const checkForEmpsWithArchivedDept = async () => {
+  //   console.log(allSelectedRows)
+  //   for (let i = 0; i < allSelectedRows.length; i++) {
+  //     try {
+  //       setIsLoading(true);
+  //       const response = await axios.get(
+  //         `${import.meta.env.VITE_APP_EXPRESS_BASE_URL}/checkForEmpsWithArchivedDept`,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //         },
+  //         {allSelectedUsers: allSelectedRows}
+  //       );
+  //       setIsLoading(false);
+  //       setReloadData(true);
+  //     } catch (error) {
+  //       console.error('errored looking for emps with archived dept', error);
+  //     }
+  //     setArchivedDeptCheck[response];
+  //     close();
+  //   }
+  // };
 
   return (
     <div>
@@ -74,15 +101,19 @@ export function UnArchiveSelectedUsers({
         size="auto"
         padding="md"
       >
-        <span>Are you sure you want to </span>
-        <span className="font-bold">un-archive </span>
-        <span>all selected users?</span>
-        <div className="flex mt-3 justify-between">
-          <Button onClick={handleClick} color="green">
-            Yes
-          </Button>
-          <Button onClick={close}>No</Button>
+        <div>
+          <span>Are you sure you want to </span>
+          <span className="font-bold">un-archive </span>
+          <span>all selected users?</span>
+          <div className="flex mt-3 justify-between">
+            <Button onClick={handleClick} color="green">
+              Yes
+            </Button>
+            <Button onClick={close}>No</Button>
+          </div>
         </div>
+
+
       </Modal>
     </div>
   );
@@ -128,7 +159,7 @@ export default function Archive() {
       />
       {/* ----------------------------------------------------- */}
       <div className="md:flex">
-        <div className="md:w-1/3">
+        <div className="md:w-full">
           <OnboardingEmployees
             selectedEmps={selectedEmps}
             setSelectedEmps={setSelectedEmps}
@@ -139,7 +170,7 @@ export default function Archive() {
             archived={true}
           />
         </div>
-        <div className="md:w-1/3">
+        {/* <div className="md:w-1/3">
           <Supervisors
             selectedSups={selectedSups}
             setSelectedSups={setSelectedSups}
@@ -160,7 +191,7 @@ export default function Archive() {
             searchTerm={searchTerm}
             archived={true}
           />
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -279,8 +279,8 @@ export function ArchiveDepartment({
       <Tooltip
         label={
           selectedRows.length === 0
-            ? 'Select Departments to Archive'
-            : 'Archive Department'
+            ? 'Select Departments to Delete'
+            : 'Delete Department'
         }
         openDelay="700"
       >

@@ -529,7 +529,7 @@ module.exports = {
         for (let i = 0; i < employeeTasks.length; i++) {
           const supervisor = await prisma.supervisorTaskMapping.findUnique({
             where: {
-              archived: false,
+              archived: true,
               taskId: employeeTasks[i].taskId,
             },
             include: {

@@ -7,6 +7,7 @@ const addRoutes = (router) => {
   router.patch('/updateDepartmentName', controller.updateDepartmentName);
   router.post('/addDepartment', controller.addDepartment);
   router.patch('/archiveDepartments', controller.archiveDepartments);
+  router.patch('/deleteDepartments', controller.deleteDepartments);
 };
 
 module.exports = {

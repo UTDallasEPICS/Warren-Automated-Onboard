@@ -282,6 +282,49 @@ module.exports = {
     }
   },
 
+  deleteDepartments: async (req, res) => {
+    if (!req.headers.authorization) {
+      return res.status(400).json({ message: 'No Authorization Header Found' });
+    }
+    if (await isRoleAdmin(req.headers.authorization.split(' ')[1])) {
+      try {
+        const { departmentIds } = req.body;
+        for (let i = 0; i < departmentIds.length; i++) {
+          await prisma.departmentUserMapping.deleteMany({
+            where: {
+              departmentId: parseInt(departmentIds[i])
+            }
+          });
+
+          await prisma.departmentTaskMapping.deleteMany({
+            where: {
+              departmentId: parseInt(departmentIds[i])
+            }
+          });
+
+          await prisma.supervisorTaskMapping.deleteMany({
+            where: {
+              departmentId: parseInt(departmentIds[i])
+            }
+          });
+
+          await prisma.department.delete({
+            where: {
+              id: parseInt(departmentIds[i])
+            }
+          });
+        
+        }
+        res.status(200).json({ message: 'Departments Deleted' });
+      } catch (error) {
+        console.error('Error Deleting Departments', error);
+        res.status(500).json({ message: 'Error Deleting Departments' });
+      }
+    } else {
+      res.status(401).json({ message: 'Not Authorized for this Data' });
+    }
+  },
+
   //POST
   addDepartment: async (req, res) => {
     if (!req.headers.authorization) {
